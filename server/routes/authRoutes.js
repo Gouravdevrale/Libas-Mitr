@@ -1,8 +1,8 @@
 import express from "express"
-import authService from "../controllers/authController.js"
+import authController from "../controllers/authController.js"
 const router = express.Router()
 
-const {registerUser, loginUser}= authService
+const {registerUser, loginUser}= authController
 
 router.post("/register", registerUser)
 router.post("/login", loginUser)

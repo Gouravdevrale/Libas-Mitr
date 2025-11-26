@@ -51,6 +51,7 @@ const {name, email, phone, password, address} = req.body
             email: user.email,
             phone: user.phone,
             address: user.address,
+            isAdmin: user.isAdmin,
             token: generateToken(user._id)
         })
         
@@ -79,6 +80,7 @@ const loginUser = async(req, res)=>{
             email: user.email,
             phone: user.phone,
             address: user.address,
+             isAdmin: user.isAdmin,
             token: generateToken(user._id)
         })
     } else {
@@ -95,8 +97,8 @@ const generateToken = (id) => {
 }
 3
 
-const authService={
+const authController={
     registerUser, loginUser
 }
 
-export default authService
+export default authController

@@ -4,6 +4,9 @@ import connectDB from "./config/dbConfig.js"
 
 // Local Imports
 import authRoutes from "./routes/authRoutes.js"
+import orderRoutes from "./routes/orderRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js"
+import errorHandler from "./middlewares/errorHandler.js"
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -24,6 +27,16 @@ app.get("/", (req, res) => {
 
 // Auth Routes
 app.use("/api/auth", authRoutes)
+
+// Order Routes
+app.use("/api/order", orderRoutes)
+
+// Admin Routes
+app.use("/api/admin", adminRoutes)
+
+
+// Error Handler
+app.use(errorHandler)
 
 app.listen(PORT, () =>
      console.log(`SERVER IS RUNNING AT PORT : ${PORT}`.bgBlue
