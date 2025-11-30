@@ -15,7 +15,11 @@ router.post("/product/add", protect.forAdmin, adminControllers.addProduct)
 router.put("/product/:id", protect.forAdmin, adminControllers.updateProduct)
 
 // For Order
+router.get("/orders", protect.forAdmin, adminControllers.getAllOrders)
 router.put("/order/:oid", protect.forAdmin, adminControllers.updateOrder)
+
+// For Reviews
+router.get("/reviews", protect.forAdmin, adminControllers.getAllReviews)
 
 
 export default router
