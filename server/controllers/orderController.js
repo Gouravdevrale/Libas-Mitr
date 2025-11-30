@@ -3,6 +3,11 @@ const placeOrder = async (req, res) => {
 }
 
 
-const orderControllers = { placeOrder }
+const cancelOrder = async (req, res) => {
+    res.send("Order Canceled! By " + req?.user?.name)
+}
+
+
+const orderControllers = { placeOrder, cancelOrder }
 
 export default orderControllers
