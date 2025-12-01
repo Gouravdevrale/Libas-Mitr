@@ -11,6 +11,10 @@ const productSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+         category: {
+            type: String,
+            required: true
+        },
         originalPrice: {
             type: Number,
             required: true
@@ -30,7 +34,7 @@ const productSchema = new mongoose.Schema(
         },
         size: {
             type: String,
-            enum: ["small", "medium", "large", "xl", "2xl", "3xl"],
+            enum: ["sm", "md", "lg", "xl", "2xl", "3xl"],
             required: true
         }
     }

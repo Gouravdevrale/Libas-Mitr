@@ -1,4 +1,5 @@
 import Order from "../models/orderModal.js"
+import Product from "../models/productModel.js"
 import Review from "../models/reviewModel.js"
 import User from "../models/userModel.js"
 
@@ -17,11 +18,56 @@ const getAllUsers = async (req, res) => {
 }
 
 const addProduct = async (req, res) => {
-    res.send("Product Added!")
+
+      const { name, description, originalPrice, salePrice, stock, category, size } = req.body
+
+    if (!name || !description || !originalPrice || !salePrice || !stock || !category || !size) {
+        res.status(409)
+        throw new Error('Please Fill All Details!')
+    }
+
+    //    Todo : Cloudniary Setup is pending
+
+    const product = await Product.create({
+        name,
+        description,
+        size,
+        originalPrice,
+        salePrice,
+        stock,
+        category,
+        image: req.file.path
+    })
+
+    if (!product) {
+        res.status(409)
+        throw new Error('Product Not Created!')
+    } else {
+        res.status(201).json(product)
+    }
+    // console.log(req.body);
+    
+    // res.send("Product Added!")
+    
 }
 
 const updateProduct = async (req, res) => {
-    res.send("Product Updated!")
+    // res.send("Product Updated!")
+     let product = await Product.findById(req.params.pid)
+
+    if (!product) {
+        res.status(404)
+        throw new Error('Product Not Found!')
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.pid, req.body, { new: true })
+
+    if (!updatedProduct) {
+        res.status(409)
+        throw new Error('Product Not Updated!')
+    } else {
+        res.status(200).json(updatedProduct)
+    }
 }
 
 const updateOrder = async (req, res) => {

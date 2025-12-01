@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-   "type": "module",
+  "type": "module",
   "scripts": {
     "start": "node server/server.js",
     "dev": "node --env-file=.env --watch server/server.js"
@@ -15,6 +15,7 @@
     "colors": "^1.4.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^9.0.0"
+    "mongoose": "^9.0.0",
+    "multer": "^2.0.2"
   }
 }
