@@ -5,7 +5,8 @@ const cartSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-        // unique : true
+        unique: true, // One cart per user
+        index: true   // Faster queries
     },
     products: [
         {
@@ -14,7 +15,13 @@ const cartSchema = new mongoose.Schema({
                 ref: "Product",
                 required: true
             },
-            qty: Number
+            qty: {
+                type: Number,
+                required: true,
+                min: [1, "Quantity cannot be less than 1"],
+                default: 1
+            },
+             _id: false // Prevents MongoDB from creating _id for subdocuments
         }
     ]
 }, {
