@@ -22,5 +22,8 @@ router.put("/order/:oid", protect.forAdmin, adminControllers.updateOrder)
 // For Reviews
 router.get("/reviews", protect.forAdmin, adminControllers.getAllReviews)
 
+//For Coupan
+router.post("/coupon/add", protect.forAdmin, adminControllers.createCoupon)
+
 
 export default router

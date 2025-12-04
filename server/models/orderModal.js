@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
 
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
+    // user: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User',
+    //     required: true
+    // },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Cart',
@@ -21,14 +21,14 @@ const orderSchema = new mongoose.Schema({
         required: true,
         default: false
     },
-    coupan: {
+    coupon: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Coupan',
+        ref: 'Coupon',
     },
     status: {
         type: String,
         enum: ["placed", "dispatched", "cancelled", "delivered"],
-        default: "pending",
+        default: "placed",
         required: true
     }
 

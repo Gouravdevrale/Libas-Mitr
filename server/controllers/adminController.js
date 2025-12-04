@@ -1,7 +1,9 @@
+import Coupan from "../models/coupanModel.js"
 import Order from "../models/orderModal.js"
 import Product from "../models/productModel.js"
 import Review from "../models/reviewModel.js"
 import User from "../models/userModel.js"
+
 
 
 const getAllUsers = async (req, res) => {
@@ -97,8 +99,28 @@ const getAllReviews = async (req, res) => {
     }
 }
 
+const createCoupon = async (req, res) => {
 
-const adminControllers = { getAllUsers, addProduct, updateProduct, updateOrder, getAllOrders, getAllReviews }
+    const { coupanCode, coupanDiscount } = req.body
+
+    if (!coupanCode) {
+        res.status(409)
+        throw new Error("Please Type Coupon")
+    }
+
+    const newCoupon = await Coupan.create({ coupanCode: coupanCode.toUpperCase(), coupanDiscount })
+
+    if (!newCoupon) {
+        res.status(409)
+        throw new Error("Coupon Not Created")
+    }
+
+    res.status(201).json(newCoupon)
+
+}
+
+
+const adminControllers = { getAllUsers, addProduct, updateProduct, updateOrder, getAllOrders, getAllReviews, createCoupon }
 
 
 export default adminControllers

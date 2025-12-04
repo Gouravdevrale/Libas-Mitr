@@ -9,6 +9,7 @@ import orderRoutes from "./routes/orderRoutes.js"
 import adminRoutes from "./routes/adminRoutes.js"
 import productRoutes from "./routes/productRoutes.js"
 import cartRoutes from "./routes/cartRoutes.js"
+import coupanRoutes from "./routes/coupanRoutes.js"
 
 
 
@@ -43,6 +44,9 @@ app.use("/api/products", productRoutes)
 
 // Cart Routes
 app.use("/api/cart", cartRoutes)
+
+//coupan Routes
+app.use("/api/coupan", coupanRoutes)
 
 
 // Error Handler
