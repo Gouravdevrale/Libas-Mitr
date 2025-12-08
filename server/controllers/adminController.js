@@ -73,7 +73,26 @@ const updateProduct = async (req, res) => {
 }
 
 const updateOrder = async (req, res) => {
-    res.send("Order Updated!")
+    // res.send("Order Updated!")
+
+     const orderId = req.params.oid
+
+    const myOrder = await Order.findById(orderId).populate('cart').populate('user')
+
+    if (!myOrder) {
+        res.status(404)
+        throw new Error('Order Not Found!')
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, { new: true })
+
+    if (!updatedOrder) {
+        res.status(409)
+        throw new Error("Order Cannot Be Cancelled!")
+    }
+
+
+    res.status(200).json(updatedOrder)
 }
 
 const getAllOrders = async (req, res) => {

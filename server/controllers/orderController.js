@@ -59,15 +59,76 @@ const placeOrder = async (req, res) => {
 
 
 const cancelOrder = async (req, res) => {
-    res.send("Order Canceled! By " + req?.user?.name)
+    // res.send("Order Canceled! By " + req?.user?.name)
+
+    const orderId = req.params.oid
+
+    const myOrder = await Order.findById(orderId).populate('cart').populate('user')
+
+    if (!myOrder) {
+        res.status(404)
+        throw new Error('Order Not Found!')
+    }
+
+    if (myOrder.status === "placed") {
+
+        const updatedOrder = await Order.findByIdAndUpdate(orderId, { status: "cancelled" }, { new: true })
+
+        if (!updatedOrder) {
+            res.status(409)
+            throw new Error("Order Cannot Be Cancelled!")
+        }
+
+        res.status(200).json({
+            message: "Order Cancelled",
+            updatedOrder
+        })
+    } else {
+        res.status(409)
+        throw new Error("Order Cannot Be Cancelled!")
+    }
+
+
 }
 
 const getOrders = async (req, res) => {
-    res.send("My Orders")
+    // res.send("My Orders")
+
+     const userId = req.user._id
+
+    const myOrders = await Order.find({ user: userId }).populate('cart').populate('user')
+
+    if (!myOrders) {
+        res.status(404)
+        throw new Error('Orders Not Found!')
+    }
+
+    res.status(200).json(myOrders)
+
+
 }
 
 const getOrder = async (req, res) => {
-    res.send("My Order")
+    // res.send("My Order")
+ 
+     const orderId = req.params.oid
+
+    const myOrder = await Order.findById(orderId).populate('cart').populate('user')
+
+    if (!myOrder) {
+        res.status(404)
+        throw new Error('Order Not Found!')
+    }
+
+    const cart = await Cart.findById(myOrder.cart._id)
+
+    await cart.populate("products.product")
+
+
+    res.status(200).json({
+        myOrder, cart
+    })
+
 }
 
 
