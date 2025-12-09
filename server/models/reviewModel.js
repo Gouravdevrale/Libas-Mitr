@@ -16,7 +16,7 @@ const reviewSchema = new mongoose.Schema({
         default: 1,
         required: true
     },
-    review: {
+    text: {
         type: String,
         required: [true, "Please Add Review"]
     },

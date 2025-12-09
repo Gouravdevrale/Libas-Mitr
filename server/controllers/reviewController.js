@@ -1,4 +1,5 @@
 import Review from "../models/reviewModel.js"
+import Order from "../models/orderModal.js"
 
 const getReviews = async (req, res) => {
     
@@ -26,7 +27,46 @@ const getReview = async (req, res) => {
 
 
 const addReview = async (req, res) => {
-    res.send("Product Review Added!!")
+    // res.send("Product Review Added!!")
+     const userId = req.user._id
+    const productId = req.product
+    const { rating, text } = req.body
+
+
+    if (!rating || !text) {
+        res.status(409)
+        throw new Error("Please Fill All Details!")
+    }
+
+    // Check if verified buyer
+    let orders = (await Order.find({ user: userId }).populate("cart"))
+
+    let orderHistory = orders.map((order) => order.cart.products).flat()
+
+    let productExist = orderHistory.filter((product) => {
+        return product.product.toString() === productId
+    })
+
+    
+    const review = new Review({
+        user: userId,
+        product: productId,
+        rating: rating,
+        text: text,
+        isVerifiedBuyer: productExist.length !== 0 ? true : false
+    })
+
+    await review.save()
+    await review.populate("user")
+    await review.populate("product")
+
+    if (!review) {
+        res.status(409)
+        throw new Error("Review Not Saved")
+    }
+
+
+    res.status(201).json(review)
 }
 
 const reviewController = { getReviews, addReview, getReview }
