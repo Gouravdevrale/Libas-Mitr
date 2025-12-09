@@ -45,7 +45,7 @@ const placeOrder = async (req, res) => {
 
     let newOrder = await Order.create(order)
 
-    if (!order) {
+    if (!newOrder) {
         res.status(409)
         throw new Error("Order Not Created!")
     }
@@ -62,7 +62,7 @@ const cancelOrder = async (req, res) => {
     // res.send("Order Canceled! By " + req?.user?.name)
 
     const orderId = req.params.oid
-
+    
     const myOrder = await Order.findById(orderId).populate('cart').populate('user')
 
     if (!myOrder) {
@@ -112,7 +112,7 @@ const getOrder = async (req, res) => {
     // res.send("My Order")
  
      const orderId = req.params.oid
-
+    try{
     const myOrder = await Order.findById(orderId).populate('cart').populate('user')
 
     if (!myOrder) {
@@ -128,6 +128,10 @@ const getOrder = async (req, res) => {
     res.status(200).json({
         myOrder, cart
     })
+}catch (error) {
+        res.status(404)
+        throw new Error('Order Not Found!')
+    }
 
 }
 
