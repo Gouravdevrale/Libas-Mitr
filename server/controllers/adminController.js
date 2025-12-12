@@ -1,3 +1,5 @@
+import fs from "node:fs"
+import uploadToCloudinary from "../middlewares/cloudinaryMiddleware.js"
 import Coupan from "../models/coupanModel.js"
 import Order from "../models/orderModal.js"
 import Product from "../models/productModel.js"
@@ -20,7 +22,8 @@ const getAllUsers = async (req, res) => {
 }
 
 const addProduct = async (req, res) => {
-
+   
+    try{
       const { name, description, originalPrice, salePrice, stock, category, size } = req.body
 
     if (!name || !description || !originalPrice || !salePrice || !stock || !category || !size) {
@@ -28,7 +31,11 @@ const addProduct = async (req, res) => {
         throw new Error('Please Fill All Details!')
     }
 
-    //    Todo : Cloudniary Setup is pending
+      //   Upload To Cloudinary
+       let imagePath = await uploadToCloudinary(req.file.path)
+
+        // Remove image from our server
+        fs.unlinkSync(req.file.path)
 
     const product = await Product.create({
         name,
@@ -38,7 +45,7 @@ const addProduct = async (req, res) => {
         salePrice,
         stock,
         category,
-        image: req.file.path
+        image: imagePath.secure_url
     })
 
     if (!product) {
@@ -47,8 +54,12 @@ const addProduct = async (req, res) => {
     } else {
         res.status(201).json(product)
     }
+  } catch(error) {
+        fs.unlinkSync(req?.file?.path)
+        res.status(500)
+        throw new Error('Product Not Created!')
+    }
     // console.log(req.body);
-    
     // res.send("Product Added!")
     
 }

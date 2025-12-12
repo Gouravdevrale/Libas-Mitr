@@ -1,56 +1,59 @@
 import Cart from "../models/cartModel.js";
 import Coupan from "../models/coupanModel.js";
 import Order from "../models/orderModal.js";
+import cartController from "./cartContoller.js"
 
 const placeOrder = async (req, res) => {
 
  const userId = req.user._id;
-    const { coupon } = req.body
+    // const { coupon } = req.body
 
     // Find If Coupon Exists
-    let couponCode = await Coupan.findOne({ coupanCode: coupon })
+    let couponCode = await Coupan.findOne({ coupanCode: req.body?.coupon})
 
 
-    if (!couponCode) {
-        res.status(404)
-        throw new Error("Invalid Coupon Code!")
-    }
+    // if (!couponCode) {
+    //     res.status(404)
+    //     throw new Error("Invalid Coupon Code!")
+    // }
 
 
     // Find Cart
-    const cart = await Cart.findOne({ user: userId })
-        .populate('products.product');
+    const cart = await Cart.findOne({ user: userId }).populate('products.product');
 
     if (!cart) {
         res.status(404)
         throw new Error("Cart not found")
     }
-
+  
     let totalBill = cart.products.reduce((acc, product) => {
         return acc + product.product.salePrice * product.qty
     }, 0)
 
+
     // Apply Coupan Discount
-    totalBill = totalBill - (totalBill * couponCode.coupanDiscount / 100)
+    totalBill = couponCode ? totalBill - (totalBill * couponCode.coupanDiscount / 100) : totalBill
 
 
-    const order = {
+     const order = new Order({
         user: userId,
         cart: cart,
         totalBillAmount: totalBill,
         isDiscounted: couponCode ? true : false,
-        coupon: couponCode._id,
-    }
+        coupon: couponCode ? couponCode._id : null,
+    })
+   
+    await order.save()
 
 
-    let newOrder = await Order.create(order)
-
-    if (!newOrder) {
+    if (!order) {
         res.status(409)
         throw new Error("Order Not Created!")
     }
 
-    res.status(201).json(newOrder)
+    // If ordered clear the cart
+    await cart.deleteOne();
+    res.status(201).json(order)
 
 
 

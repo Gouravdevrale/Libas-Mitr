@@ -16,10 +16,10 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    isDisounted: {
+    isDiscounted: {
         type: Boolean,
         required: true,
-        default: false
+        
     },
     coupon: {
         type: mongoose.Schema.Types.ObjectId,
