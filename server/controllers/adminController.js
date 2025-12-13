@@ -85,15 +85,42 @@ const updateOrder = async (req, res) => {
     // res.send("Order Updated!")
 
      const orderId = req.params.oid
+     const { status } = req.body
 
-    const myOrder = await Order.findById(orderId).populate('cart').populate('user')
+    const myOrder = await Order.findById(orderId).populate('products.product').populate('user')
 
     if (!myOrder) {
         res.status(404)
         throw new Error('Order Not Found!')
     }
 
-    const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, { new: true })
+     if (myOrder.status === "dispatched") {
+        res.status(409)
+        throw new Error("Order is already dispatched")
+    }
+
+     // Stock Updation
+    const updateStock = async (productId, updatedStock) => {
+        await Product.findByIdAndUpdate(productId, { stock: updatedStock })
+    }
+
+     let updatedOrder
+
+    if (status === "dispatched") {
+
+        // Update Stock
+        myOrder.products.forEach((item) => {
+            let productId = item.product._id
+            let productStock = item.product.stock
+            updateStock(productId, productStock - item.qty)
+        })
+
+        updatedOrder = await Order.findByIdAndUpdate(orderId, { status: "dispatched" }, { new: true }).populate("products.product")
+    } else {
+        updatedOrder = await Order.findByIdAndUpdate(orderId, { status: status === "delivered" ? "delivered" : "cancelled" }, { new: true })
+    }
+
+    // const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, { new: true })
 
     if (!updatedOrder) {
         res.status(409)
@@ -106,7 +133,7 @@ const updateOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
    
-  let orders = await Order.find().populate('cart')
+  let orders = await Order.find().populate('products')
 
     if (!orders) {
         res.status(404)
