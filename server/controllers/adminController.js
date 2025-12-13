@@ -6,8 +6,6 @@ import Product from "../models/productModel.js"
 import Review from "../models/reviewModel.js"
 import User from "../models/userModel.js"
 
-
-
 const getAllUsers = async (req, res) => {
 
     let users = await User.find()
@@ -108,7 +106,7 @@ const updateOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
    
-  let orders = await Order.find()
+  let orders = await Order.find().populate('cart')
 
     if (!orders) {
         res.status(404)
