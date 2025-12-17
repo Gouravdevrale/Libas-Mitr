@@ -40,9 +40,9 @@ const addReview = async (req, res) => {
     }
 
     // Check if verified buyer
-    let orders = (await Order.find({ user: userId }).populate("cart"))
+    let orders = (await Order.find({ user: userId }).populate("products.product"))
 
-    let orderHistory = orders.map((order) => order.cart.products).flat()
+    let orderHistory = orders.map((order) => order.products).flat()
 
     let productExist = orderHistory.filter((product) => {
         return product.product.toString() === productId

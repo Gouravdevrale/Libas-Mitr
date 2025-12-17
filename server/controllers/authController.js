@@ -59,6 +59,7 @@ const {name, email, phone, password, address} = req.body
             phone: user.phone,
             address: user.address,
             isAdmin: user.isAdmin,
+            credits: user.credits,
             token: generateToken(user._id)
         })
         
@@ -87,7 +88,8 @@ const loginUser = async(req, res)=>{
             email: user.email,
             phone: user.phone,
             address: user.address,
-             isAdmin: user.isAdmin,
+            isAdmin: user.isAdmin,
+            credits: user.credits,
             token: generateToken(user._id)
         })
     } else {

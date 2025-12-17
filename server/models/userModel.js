@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema({
     address: {
         type: String,
         required: true
+    },
+     credits: {
+        type: Number,
+        default: 5,
+        required: true
     }
 }, {
     timestamps: true

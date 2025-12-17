@@ -1,6 +1,9 @@
 import express from "express"
 import colors from "colors"
+import dotenv from "dotenv"
 import connectDB from "./config/dbConfig.js"
+
+dotenv.config()
 
 // Local Imports
 import errorHandler from "./middlewares/errorHandler.js"
@@ -10,6 +13,7 @@ import adminRoutes from "./routes/adminRoutes.js"
 import productRoutes from "./routes/productRoutes.js"
 import cartRoutes from "./routes/cartRoutes.js"
 import coupanRoutes from "./routes/coupanRoutes.js"
+import virtualTryRoutes from "./routes/virtualTryRoutes.js"
 
 
 
@@ -48,6 +52,9 @@ app.use("/api/cart", cartRoutes)
 //coupan Routes
 app.use("/api/coupan", coupanRoutes)
 
+
+// Virtual Tru
+app.use("/api/virtual_try", virtualTryRoutes)
 
 // Error Handler
 app.use(errorHandler)
