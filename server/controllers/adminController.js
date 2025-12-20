@@ -19,6 +19,22 @@ const getAllUsers = async (req, res) => {
 
 }
 
+
+const updateUser = async (req, res) => {
+
+    let userId = req.params.uid
+
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body, { new: true })
+
+    if (!updatedUser) {
+        res.status(409)
+        throw new Error("User Not Updated!")
+    }
+
+    res.status(200).json(updatedUser)
+
+}
+
 const addProduct = async (req, res) => {
    
     try{
@@ -187,7 +203,7 @@ const getCoupons = async (req, res) => {
 }
 
 
-const adminControllers = { getAllUsers, addProduct, updateProduct, updateOrder, getAllOrders, getAllReviews, createCoupon, getCoupons }
+const adminControllers = { getAllUsers, addProduct, updateProduct, updateOrder, getAllOrders, getAllReviews, createCoupon, getCoupons, updateUser }
 
 
 export default adminControllers

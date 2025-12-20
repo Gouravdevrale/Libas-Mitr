@@ -1,3 +1,5 @@
+import ProductCard from "../components/ProductCard";
+
 function AllProducts() {
     return (
         <div className="min-h-screen bg-stone-50">
@@ -88,28 +90,9 @@ function AllProducts() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
-                                <div key={item} className="bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                                    <div className="aspect-[3/4] bg-gray-200 relative">
-                                        <span className="absolute top-4 left-4 bg-violet-100 text-violet-700 text-xs font-semibold px-3 py-1 rounded-full">
-                                            Virtual Try-On Available
-                                        </span>
-                                    </div>
-                                    <div className="p-5">
-                                        <h3 className="font-bold text-neutral-900 mb-1">Elegant Summer Dress</h3>
-                                        <p className="text-sm text-gray-600 mb-3">Dresses</p>
-                                        <p className="text-2xl font-bold text-neutral-900 mb-4">$89.99</p>
-                                        <div className="flex gap-2">
-                                            <button className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 text-white py-2.5 rounded-xl font-medium hover:from-violet-700 hover:to-purple-700 transition-all">
-                                                Try Now
-                                            </button>
-                                            <button className="flex-1 border-2 border-neutral-900 text-neutral-900 py-2.5 rounded-xl font-medium hover:bg-neutral-900 hover:text-white transition-all">
-                                                View Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                            <ProductCard />
+                            <ProductCard />
+                            <ProductCard />
                         </div>
 
                         <div className="flex justify-center items-center gap-2 mt-12">

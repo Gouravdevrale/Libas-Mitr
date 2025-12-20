@@ -10,6 +10,7 @@ const router = express.Router()
 
 // For Users
 router.get("/users", protect.forAdmin, adminControllers.getAllUsers)
+router.put("/users/:uid", protect.forAdmin, adminControllers.updateUser)
 
 // For Products
 router.post("/product/add", protect.forAdmin, upload.single("image"), adminControllers.addProduct)

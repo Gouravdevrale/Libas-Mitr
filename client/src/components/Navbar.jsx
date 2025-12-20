@@ -1,7 +1,7 @@
 import { Sparkles } from 'lucide-react'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { logoutUser } from '../features/auth/authSlice'
 
 const Navbar = () => {
@@ -10,6 +10,8 @@ const Navbar = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation();
+
 
     const handleLogout = () => {
         navigate("/")
@@ -17,7 +19,7 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <nav className={location?.pathname.includes("admin") ? "hidden" : "bg-white border-b border-gray-200 sticky top-0 z-50"}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <Link to={"/"}>
@@ -35,7 +37,7 @@ const Navbar = () => {
                     {
                         user ? (<>
                             <div className='flex items-center justify-center space-x-5'>
-                                <h1>Welcome {user?.name}</h1>
+                                <Link to={user?.isAdmin ? "/admin/dashboard" : "/profile"}> <h1>Welcome {user?.name}</h1></Link>
                                 <button onClick={handleLogout} className="bg-gradient-to-r from-red-600 to-red-600 text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg transition-all duration-300 cursor-pointer">Logout</button>
                             </div>
                         </>) : (<Link to={"/login"} className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg transition-all duration-300">

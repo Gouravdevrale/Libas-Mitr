@@ -52,7 +52,7 @@ const {name, email, phone, password, address} = req.body
         res.status(400)
         throw new Error("User Not Created!")
     } else {
-        res.status(200).json({
+        res.status(201).json({
             _id: user._id,
             name: user.name,
             email: user.email,
