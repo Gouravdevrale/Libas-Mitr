@@ -82,7 +82,7 @@ const getCart = async (req, res) => {
 const addToCart = async (req, res) => {
 
     const { productId, qty = 1 } = req.body;
-    const userId = req.user.id; // user is attached via auth middleware
+    const userId = req.user._id; // user is attached via auth middleware
 
     // Validate product exists
     const product = await Product.findById(productId);

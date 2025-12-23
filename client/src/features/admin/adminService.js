@@ -38,16 +38,47 @@ const userUpdate = async (userData, token) => {
 
 
     const response = await axios.put(API_URL + "/users/" + userData.userId, userData, options)
-    console.log(response.data)
     return response.data
 
 
 }
 
 
+const addProduct = async (formData, token) => {
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
 
 
-const adminService = { fetchAllUsers, fetchAllOrders, userUpdate }
+    const response = await axios.post(API_URL + "/product/add", formData, options)
+    return response.data
+
+}
+
+const updateProduct = async (formData, productId, token) => {
+
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+
+
+    const response = await axios.put(API_URL + "/product/" + productId, formData, options)
+    return response.data
+
+}
+
+
+const getProducts = async () => {
+    const response = await axios.get("/api/products")
+    return response.data
+}
+
+
+const adminService = { fetchAllUsers, fetchAllOrders, userUpdate, getProducts, addProduct, updateProduct }
 
 
 export default adminService

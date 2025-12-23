@@ -149,7 +149,7 @@ const updateOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
    
-  let orders = await Order.find().populate('products')
+  let orders = await Order.find().populate('products').populate('user')
 
     if (!orders) {
         res.status(404)
