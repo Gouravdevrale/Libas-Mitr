@@ -29,13 +29,15 @@ function Orders() {
 
     useEffect(() => {
 
-        if (!user.isAdmin) {
+        if (!user?.isAdmin) {
             navigate("/")
         }
 
 
-        // Api's Fetching
-        dispatch(getAllOrdersForAdmin())
+        if (user?.isAdmin) {
+            // Api's Fetching
+            dispatch(getAllOrdersForAdmin())
+        }
 
 
 

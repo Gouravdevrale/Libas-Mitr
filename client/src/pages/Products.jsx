@@ -89,13 +89,15 @@ function Products() {
 
     useEffect(() => {
 
-        if (!user.isAdmin) {
+        if (!user?.isAdmin) {
             navigate("/")
         }
 
 
-        // Api's Fetching
-        dispatch(getAllProducts())
+        if (user?.isAdmin) {
+            // Api's Fetching
+            dispatch(getAllProducts())
+        }
 
 
 

@@ -10,6 +10,7 @@ const initialState = {
     allProducts: [],
     allOrders: [],
     allCoupons: [],
+    allReviews: [],
     productEdit: { product: {}, isEdit: false }
 }
 
@@ -198,6 +199,25 @@ const adminSlice = createSlice({
                 state.adminIsError = true
                 state.adminErrorMessage = action.payload
             })
+            .addCase(getAllReviews.pending, (state, action) => {
+                state.adminIsLoading = true
+                state.adminIsSuccess = false
+                state.adminIsError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(getAllReviews.fulfilled, (state, action) => {
+                state.adminIsLoading = false
+                state.adminIsSuccess = true
+                state.allReviews = action.payload
+                state.adminIsError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(getAllReviews.rejected, (state, action) => {
+                state.adminIsLoading = false
+                state.adminIsSuccess = false
+                state.adminIsError = true
+                state.adminErrorMessage = action.payload
+            })
     }
 });
 
@@ -284,6 +304,18 @@ export const getAllCoupons = createAsyncThunk("FETCH/ADMIN/COUPONS", async (_, t
     let token = thunkAPI.getState().auth.user.token
     try {
         return await adminService.fetchAllCoupons(token)
+    } catch (error) {
+        let message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+
+// FETCH ALL REVIEWS
+export const getAllReviews = createAsyncThunk("FETCH/ADMIN/REVIEWS", async (_, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token
+    try {
+        return await adminService.fetchAllReviews(token)
     } catch (error) {
         let message = error.response.data.message
         return thunkAPI.rejectWithValue(message)

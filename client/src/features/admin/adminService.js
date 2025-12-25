@@ -111,8 +111,18 @@ const getProducts = async () => {
     return response.data
 }
 
+const fetchAllReviews = async (token) => {
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + "/reviews", options)
+    return response.data
+}
 
-const adminService = { fetchAllUsers, fetchAllOrders, userUpdate, getProducts, addProduct, updateProduct, updateOrder, fetchAllCoupons, createCoupon }
+
+const adminService = { fetchAllUsers, fetchAllOrders, userUpdate, getProducts, addProduct, updateProduct, updateOrder, fetchAllCoupons, createCoupon, fetchAllReviews }
 
 
 export default adminService

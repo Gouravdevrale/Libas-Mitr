@@ -28,13 +28,15 @@ function Users() {
 
     useEffect(() => {
 
-        if (!user.isAdmin) {
+        if (!user?.isAdmin) {
             navigate("/")
         }
 
 
-        // Api's Fetching
-        dispatch(getAllUsersForAdmin())
+        if (user?.isAdmin) {
+            // Api's Fetching
+            dispatch(getAllUsersForAdmin())
+        }
 
 
 

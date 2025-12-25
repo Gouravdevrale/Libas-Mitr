@@ -170,7 +170,7 @@ const getAllOrders = async (req, res) => {
 }
 
 const getAllReviews = async (req, res) => {
-     let reviews = await Review.find()
+     let reviews = await Review.find().populate('user').populate('product')
 
     if (!reviews) {
         res.status(404)

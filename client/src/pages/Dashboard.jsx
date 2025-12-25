@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { LoadingScreen } from '../components/LoadingScreen';
-import { getAllOrdersForAdmin, getAllProducts, getAllUsersForAdmin } from '../features/admin/adminSlice';
+import { getAllCoupons, getAllOrdersForAdmin, getAllProducts, getAllUsersForAdmin } from '../features/admin/adminSlice';
 
 function Dashboard() {
 
@@ -21,16 +21,19 @@ function Dashboard() {
 
     useEffect(() => {
 
-        if (!user.isAdmin) {
+        if (!user?.isAdmin) {
             navigate("/")
         }
 
 
-        // Api's Fetching
-        dispatch(getAllUsersForAdmin())
-        dispatch(getAllOrdersForAdmin())
-        dispatch(getAllProducts())
+        if (user?.isAdmin) {
+            // Api's Fetching
+            dispatch(getAllUsersForAdmin())
+            dispatch(getAllOrdersForAdmin())
+            dispatch(getAllProducts())
+            dispatch(getAllCoupons())
 
+        }
 
 
         if (adminIsError && adminErrorMessage) {
@@ -115,46 +118,22 @@ function Dashboard() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
-                                    <tr className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 text-sm text-gray-900">#ORD-1047</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">Sarah Johnson</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">$284.50</td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 text-sm text-gray-900">#ORD-1046</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">Michael Chen</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">$532.00</td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-violet-100 text-violet-800">Processing</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 text-sm text-gray-900">#ORD-1045</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">Emily Rodriguez</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">$195.75</td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 text-sm text-gray-900">#ORD-1044</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">David Kim</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">$417.25</td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Delivered</span>
-                                        </td>
-                                    </tr>
-                                    <tr className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 text-sm text-gray-900">#ORD-1043</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">Anna Thompson</td>
-                                        <td className="px-6 py-4 text-sm text-gray-900">$348.90</td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-3 py-1 text-xs font-semibold rounded-full bg-violet-100 text-violet-800">Processing</span>
-                                        </td>
-                                    </tr>
+
+                                    {
+                                        allOrders.map((order) => {
+                                            return (
+                                                <tr key={order._id} className="hover:bg-gray-50 transition-colors">
+                                                    <td className="px-6 py-4 text-sm text-gray-900">#{order._id[0] + order._id[1] + order._id[2]}</td>
+                                                    <td className="px-6 py-4 text-sm text-gray-900">{order.user.name}</td>
+                                                    <td className="px-6 py-4 text-sm text-gray-900">{order.totalBillAmount}</td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`px-3 py-1 text-xs font-semibold rounded-full ${order.status === "delivered" ? 'bg-green-100 text-green-800' : order.status === "cancelled" ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}`}>{order.status}</span>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+
                                 </tbody>
                             </table>
                         </div>

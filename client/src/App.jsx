@@ -17,6 +17,7 @@ import Products from "./pages/Products"
 import Reviews from "./pages/Reviews"
 import Orders from "./pages/Orders"
 import Coupons from "./pages/Coupons"
+import PrivateAdminComponent from "./components/PrivateAdminComponent"
 
 
 const App = () => {
@@ -30,12 +31,14 @@ const App = () => {
         <Route path="/collections" element={<AllProducts />} />
         <Route path="/collections/:pid" element={<ProductPage />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/admin/dashboard" element={<Dashboard />} />
-        <Route path="/admin/users" element={<Users />} />
-        <Route path="/admin/products" element={<Products />} />
-        <Route path="/admin/reviews" element={<Reviews />} />
-        <Route path="/admin/orders" element={<Orders />} />
-        <Route path="/admin/coupons" element={<Coupons />} />
+        <Route path="/admin" element={<PrivateAdminComponent />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="users" element={<Users />} />
+          <Route path="products" element={<Products />} />
+          <Route path="reviews" element={<Reviews />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="coupons" element={<Coupons />} />
+        </Route>
       </Routes>
       <ToastContainer />
       <Footer />

@@ -46,13 +46,15 @@ function Coupons() {
 
     useEffect(() => {
 
-        if (!user.isAdmin) {
+        if (!user?.isAdmin) {
             navigate("/")
         }
 
 
-        // Api's Fetching
-        dispatch(getAllCoupons())
+        if (user?.isAdmin) {
+            // Api's Fetching
+            dispatch(getAllCoupons())
+        }
 
 
 
