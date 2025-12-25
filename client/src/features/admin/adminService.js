@@ -71,6 +71,40 @@ const updateProduct = async (formData, productId, token) => {
 
 }
 
+const updateOrder = async (orderDetails, token) => {
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.put(API_URL + "/order/" + orderDetails.orderId, orderDetails, options)
+    return response.data
+
+}
+
+const fetchAllCoupons = async (token) => {
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + "/coupon/", options)
+    return response.data
+
+}
+
+const createCoupon = async (formData, token) => {
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.post(API_URL + "/coupon/add", formData, options)
+    console.log(response.data)
+    return response.data
+
+}
+
 
 const getProducts = async () => {
     const response = await axios.get("/api/products")
@@ -78,7 +112,7 @@ const getProducts = async () => {
 }
 
 
-const adminService = { fetchAllUsers, fetchAllOrders, userUpdate, getProducts, addProduct, updateProduct }
+const adminService = { fetchAllUsers, fetchAllOrders, userUpdate, getProducts, addProduct, updateProduct, updateOrder, fetchAllCoupons, createCoupon }
 
 
 export default adminService

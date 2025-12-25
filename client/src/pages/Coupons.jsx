@@ -1,21 +1,96 @@
 // src/pages/Coupons.tsx
 import Layout from '../components/Layout';
 import { Plus, Ban } from 'lucide-react';
+import { LoadingScreen } from '../components/LoadingScreen';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { addCoupon, getAllCoupons } from '../features/admin/adminSlice';
 
 function Coupons() {
+
+    const { user } = useSelector(state => state.auth)
+    const { adminIsLoading, adminIsSuccess, adminIsError, adminErrorMessage, allCoupons } = useSelector(state => state.admin)
+
+    const [formData, setFormData] = useState({
+        coupanCode: "",
+        coupanDiscount: ""
+    })
+
+
+    const { coupanCode, coupanDiscount } = formData
+
+    const handleChange = (e) => {
+
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        })
+
+    }
+
+
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        dispatch(addCoupon(formData))
+        setFormData({
+            coupanCode: "",
+            coupanDiscount: ""
+        })
+    }
+
+
+    useEffect(() => {
+
+        if (!user.isAdmin) {
+            navigate("/")
+        }
+
+
+        // Api's Fetching
+        dispatch(getAllCoupons())
+
+
+
+
+        if (adminIsError && adminErrorMessage) {
+            toast.error(adminErrorMessage, { position: "top-center" })
+        }
+
+
+    }, [user, adminIsError, adminErrorMessage])
+
+
+
+    if (adminIsLoading) {
+        return (
+            <LoadingScreen loadingMessage={"Coupons Loading...."} />
+        )
+    }
+
+
+
+
     return (
         <Layout activeMenu="coupons" pageTitle="Coupons">
             <div className="space-y-8">
                 <div className="bg-white rounded-xl shadow-md border border-gray-200">
                     <div className="p-6 border-b border-gray-200">
                         <h3 className="text-lg font-bold text-gray-900 mb-6">Create Coupon</h3>
-                        <form className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="couponCode" className="block text-sm font-semibold text-gray-700 mb-2">
                                         Coupon Code
                                     </label>
                                     <input
+                                        value={coupanCode}
+                                        onChange={handleChange}
+                                        name='coupanCode'
                                         type="text"
                                         id="couponCode"
                                         placeholder="e.g., SUMMER2024"
@@ -28,32 +103,12 @@ function Coupons() {
                                         Discount Percentage
                                     </label>
                                     <input
+                                        value={coupanDiscount}
+                                        onChange={handleChange}
+                                        name='coupanDiscount'
                                         type="number"
                                         id="discount"
                                         placeholder="0"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="expiryDate" className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Expiry Date
-                                    </label>
-                                    <input
-                                        type="date"
-                                        id="expiryDate"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label htmlFor="minOrder" className="block text-sm font-semibold text-gray-700 mb-2">
-                                        Minimum Order Amount
-                                    </label>
-                                    <input
-                                        type="number"
-                                        id="minOrder"
-                                        placeholder="0.00"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
                                     />
                                 </div>
@@ -61,7 +116,7 @@ function Coupons() {
 
                             <div>
                                 <button
-                                    type="button"
+                                    type="submit"
                                     className="px-6 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2"
                                 >
                                     <Plus className="w-4 h-4" />
@@ -89,140 +144,25 @@ function Coupons() {
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Code</th>
                                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Discount</th>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Min Order</th>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Expiry Date</th>
+                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Created On</th>
                                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">SUMMER2024</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">25%</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">$100.00</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">2024-08-31</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                                            <Ban className="w-4 h-4" />
-                                            Disable
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">NEWYEAR15</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">15%</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">$50.00</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">2024-02-15</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Expired</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                                            <Ban className="w-4 h-4" />
-                                            Disable
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">WELCOME10</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">10%</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">$0.00</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">2024-12-31</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                                            <Ban className="w-4 h-4" />
-                                            Disable
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">FLASH50</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">50%</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">$200.00</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">2024-03-01</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                                            <Ban className="w-4 h-4" />
-                                            Disable
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">SPRING20</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">20%</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">$75.00</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">2024-05-31</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                                            <Ban className="w-4 h-4" />
-                                            Disable
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">BLACKFRIDAY30</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">30%</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">$150.00</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">2023-11-30</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Expired</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                                            <Ban className="w-4 h-4" />
-                                            Disable
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">LOYALTY5</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">5%</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">$0.00</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">2025-12-31</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                                            <Ban className="w-4 h-4" />
-                                            Disable
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">VIP40</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">40%</td>
-                                    <td className="px-6 py-4 text-sm text-gray-900">$500.00</td>
-                                    <td className="px-6 py-4 text-sm text-gray-600">2024-12-31</td>
-                                    <td className="px-6 py-4">
-                                        <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2">
-                                            <Ban className="w-4 h-4" />
-                                            Disable
-                                        </button>
-                                    </td>
-                                </tr>
+                                {
+                                    allCoupons.map(coupon => {
+                                        return (
+                                            <tr key={coupon._id} className="hover:bg-gray-50 transition-colors">
+                                                <td className="px-6 py-4 text-sm font-semibold text-gray-900">{coupon.coupanCode}</td>
+                                                <td className="px-6 py-4 text-sm text-gray-900">{coupon.coupanDiscount}%</td>
+                                                <td className="px-6 py-4 text-sm text-gray-600">{new Date(coupon.createdAt).toLocaleDateString('en-IN')}</td>
+                                                <td className="px-6 py-4">
+                                                    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">{coupon.isActive ? "Active" : "Expired"}</span>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                             </tbody>
                         </table>
                     </div>

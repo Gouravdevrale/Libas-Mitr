@@ -3,10 +3,10 @@ import Layout from '../components/Layout';
 import { Package } from 'lucide-react';
 import { LoadingScreen } from '../components/LoadingScreen';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { getAllOrdersForAdmin } from '../features/admin/adminSlice';
+import { getAllOrdersForAdmin, orderUpdate } from '../features/admin/adminSlice';
 
 function Orders() {
 
@@ -15,8 +15,16 @@ function Orders() {
 
 
 
+
     const navigate = useNavigate()
     const dispatch = useDispatch()
+
+
+    // Handle Order Update
+    const handleOrderUpdate = (orderDetails) => {
+        dispatch(orderUpdate(orderDetails))
+    }
+
 
 
     useEffect(() => {
@@ -33,7 +41,6 @@ function Orders() {
 
 
         if (adminIsError && adminErrorMessage) {
-            navigate("/")
             toast.error(adminErrorMessage, { position: "top-center" })
         }
 
@@ -72,7 +79,6 @@ function Orders() {
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Discount</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total Amount</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Order Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -81,24 +87,19 @@ function Orders() {
                                     return (
                                         <tr key={order._id} className="hover:bg-gray-50 transition-colors">
                                             <td className="px-6 py-4 text-sm font-medium text-gray-900">#{order._id}</td>
-                                            <td className="px-6 py-4 text-sm text-gray-900">{order.user.name}</td>
+                                            <td className="px-6 py-4 text-sm text-gray-900">{order?.user?.name}</td>
                                             <td className="px-6 py-4">
                                                 <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">{!order.coupon ? "N/A" : order.coupon}</span>
                                             </td>
                                             <td className="px-6 py-4 text-sm font-semibold text-gray-900">₹{order.totalBillAmount}</td>
                                             {/* ["placed", "dispatched", "cancelled", "delivered"], */}
                                             <td className="px-6 py-4">
-                                                <select defaultValue={order.status} className="px-3 py-1 text-xs font-semibold rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500">
+                                                <select onChange={(e) => handleOrderUpdate({ orderId: order._id, status: e.target.value })} defaultValue={order.status} className="px-3 py-1 text-xs font-semibold rounded-lg border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-violet-500">
                                                     <option value={"placed"}>Placed</option>
                                                     <option value={"dispatched"}>Dispatched</option>
                                                     <option value={"cancelled"}>Cancelled</option>
                                                     <option value={"delivered"}>Delivered</option>
                                                 </select>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <button className="px-4 py-2 bg-violet-600 text-white rounded-lg text-xs font-semibold hover:bg-violet-700 transition-colors">
-                                                    Update Order
-                                                </button>
                                             </td>
                                         </tr>
                                     )

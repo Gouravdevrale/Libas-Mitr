@@ -109,11 +109,11 @@ const updateOrder = async (req, res) => {
         res.status(404)
         throw new Error('Order Not Found!')
     }
-
-     if (myOrder.status === "dispatched") {
-        res.status(409)
-        throw new Error("Order is already dispatched")
-    }
+// Day 26
+    //  if (myOrder.status === "dispatched") {
+    //     res.status(409)
+    //     throw new Error("Order is already dispatched")
+    // }
 
      // Stock Updation
     const updateStock = async (productId, updatedStock) => {
@@ -132,10 +132,20 @@ const updateOrder = async (req, res) => {
         })
 
         updatedOrder = await Order.findByIdAndUpdate(orderId, { status: "dispatched" }, { new: true }).populate("products.product")
-    } else {
-        updatedOrder = await Order.findByIdAndUpdate(orderId, { status: status === "delivered" ? "delivered" : "cancelled" }, { new: true })
-    }
+    // } else {
+    //     updatedOrder = await Order.findByIdAndUpdate(orderId, { status: status === "delivered" ? "delivered" : "cancelled" }, { new: true })
+    // }
+      } else if (status === "delivered") {
+        updatedOrder = await Order.findByIdAndUpdate(orderId, { status: "delivered" }, { new: true })
+    } else if (status === "cancelled") {
+        if (myOrder.status === "dispatched") {
+            res.status(409)
+            throw new Error("Order is already dispatched")
+        } else {
+            updatedOrder = await Order.findByIdAndUpdate(orderId, { status: "cancelled" }, { new: true })
+        }
 
+    }
     // const updatedOrder = await Order.findByIdAndUpdate(orderId, req.body, { new: true })
 
     if (!updatedOrder) {

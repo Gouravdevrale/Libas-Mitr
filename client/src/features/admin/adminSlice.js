@@ -141,6 +141,63 @@ const adminSlice = createSlice({
                 state.adminIsError = true
                 state.adminErrorMessage = action.payload
             })
+            .addCase(orderUpdate.pending, (state, action) => {
+                state.adminIsLoading = true
+                state.adminIsSuccess = false
+                state.adminIsError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(orderUpdate.fulfilled, (state, action) => {
+                state.adminIsLoading = false
+                state.adminIsSuccess = true
+                state.allOrders = state.allOrders.map(order => order._id === action.payload._id ? action.payload : order)
+                state.adminIsError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(orderUpdate.rejected, (state, action) => {
+                state.adminIsLoading = false
+                state.adminIsSuccess = false
+                state.adminIsError = true
+                state.adminErrorMessage = action.payload
+            })
+            .addCase(getAllCoupons.pending, (state, action) => {
+                state.adminIsLoading = true
+                state.adminIsSuccess = false
+                state.adminIsError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(getAllCoupons.fulfilled, (state, action) => {
+                state.adminIsLoading = false
+                state.adminIsSuccess = true
+                state.allCoupons = action.payload
+                state.adminIsError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(getAllCoupons.rejected, (state, action) => {
+                state.adminIsLoading = false
+                state.adminIsSuccess = false
+                state.adminIsError = true
+                state.adminErrorMessage = action.payload
+            })
+            .addCase(addCoupon.pending, (state, action) => {
+                state.adminIsLoading = true
+                state.adminIsSuccess = false
+                state.adminIsError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(addCoupon.fulfilled, (state, action) => {
+                state.adminIsLoading = false
+                state.adminIsSuccess = true
+                state.allCoupons = [action.payload, ...state.allCoupons]
+                state.adminIsError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(addCoupon.rejected, (state, action) => {
+                state.adminIsLoading = false
+                state.adminIsSuccess = false
+                state.adminIsError = true
+                state.adminErrorMessage = action.payload
+            })
     }
 });
 
@@ -207,8 +264,46 @@ export const productUpdate = createAsyncThunk("UPDATE/ADMIN/PRODUCT", async (for
         let message = error.response.data.message
         return thunkAPI.rejectWithValue(message)
     }
-
 })
+
+
+// UPDATE ORDER
+export const orderUpdate = createAsyncThunk("UPDATE/ADMIN/ORDER", async (orderDetails, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token
+    try {
+        return await adminService.updateOrder(orderDetails, token)
+    } catch (error) {
+        let message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+
+// FETCH ALL COUPONS
+export const getAllCoupons = createAsyncThunk("FETCH/ADMIN/COUPONS", async (_, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token
+    try {
+        return await adminService.fetchAllCoupons(token)
+    } catch (error) {
+        let message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+
+// ADD COUPON
+export const addCoupon = createAsyncThunk("ADD/ADMIN/COUPONS", async (formData, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token
+    try {
+        return await adminService.createCoupon(formData, token)
+    } catch (error) {
+        let message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+
+
 
 // GET PRODUCTS
 export const getAllProducts = createAsyncThunk("GET/ADMIN/PRODUCTS", async (_, thunkAPI) => {
