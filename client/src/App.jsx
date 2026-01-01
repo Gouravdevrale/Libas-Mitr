@@ -18,6 +18,10 @@ import Reviews from "./pages/Reviews"
 import Orders from "./pages/Orders"
 import Coupons from "./pages/Coupons"
 import PrivateAdminComponent from "./components/PrivateAdminComponent"
+import CartBtn from "./components/CartBtn"
+import Profile from "./pages/Profile"
+import PrivateComponent from "./components/PrivateComponent"
+import NotFound from "./pages/PageNotFound"
 
 
 const App = () => {
@@ -25,12 +29,19 @@ const App = () => {
     <Router>
       <Navbar />
       <Routes>
+        <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/collections" element={<AllProducts />} />
+
         <Route path="/collections/:pid" element={<ProductPage />} />
-        <Route path="/cart" element={<Cart />} />
+
+        <Route path="/auth" element={<PrivateComponent />}>
+          <Route path="cart" element={<Cart />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
+
         <Route path="/admin" element={<PrivateAdminComponent />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
@@ -41,6 +52,7 @@ const App = () => {
         </Route>
       </Routes>
       <ToastContainer />
+      <CartBtn />
       <Footer />
     </Router>
   )

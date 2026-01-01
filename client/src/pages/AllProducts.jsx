@@ -1,6 +1,40 @@
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify"
 import ProductCard from "../components/ProductCard";
+import { useEffect } from "react";
+import { LoadingScreen } from "../components/LoadingScreen";
+import { getAllProducts } from "../features/products/productSlice";
 
 function AllProducts() {
+
+    const { products, productSuccess, productLoading, productError, productErrorMessage } = useSelector(state => state.product)
+
+    const dispatch = useDispatch()
+
+
+
+    useEffect(() => {
+
+        // Api Call
+        dispatch(getAllProducts())
+
+
+        if (productError && productErrorMessage) {
+            toast.error(productErrorMessage, { position: "top-center" })
+        }
+
+
+    }, [productError, productErrorMessage])
+
+
+    if (productLoading) {
+        return (
+            <LoadingScreen loadingMessage={"Products Message"} />
+        )
+    }
+
+
+
     return (
         <div className="min-h-screen bg-stone-50">
             <div className="max-w-7xl mx-auto px-4 py-6">
@@ -14,7 +48,7 @@ function AllProducts() {
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-8">
-                    <aside className="lg:w-64 flex-shrink-0">
+                    {/* <aside className="lg:w-64 flex-shrink-0">
                         <div className="bg-white rounded-3xl shadow-md p-6 sticky top-6">
                             <h3 className="text-lg font-bold text-neutral-900 mb-6">Filters</h3>
 
@@ -76,7 +110,7 @@ function AllProducts() {
                                 Apply Filters
                             </button>
                         </div>
-                    </aside>
+                    </aside> */}
 
                     <main className="flex-1">
                         <div className="flex justify-between items-center mb-6">
@@ -90,9 +124,13 @@ function AllProducts() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <ProductCard />
-                            <ProductCard />
-                            <ProductCard />
+                            {
+                                products.map((product) => {
+                                    return (
+                                        <ProductCard key={product._id} product={product} />
+                                    )
+                                })
+                            }
                         </div>
 
                         <div className="flex justify-center items-center gap-2 mt-12">

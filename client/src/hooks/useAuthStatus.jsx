@@ -3,25 +3,25 @@ import { useState } from "react"
 import { useSelector } from "react-redux"
 
 
-const useAdminAuthStatus = () => {
+const useAuthStatus = () => {
 
     const { user } = useSelector(state => state.auth)
 
-    const [isAdmin, setIsAdmin] = useState(false)
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [authLoading, setAuthLoading] = useState(true)
 
     useEffect(() => {
 
-        user?.isAdmin ? setIsAdmin(true) : setIsAdmin(false)
+        user ? setIsAuthenticated(true) : setIsAuthenticated(false)
         setAuthLoading(false)
 
     }, [user])
 
 
-    return { isAdmin, authLoading }
+    return { isAuthenticated, authLoading }
 
 
 
 }
 
-export default useAdminAuthStatus
+export default useAuthStatus

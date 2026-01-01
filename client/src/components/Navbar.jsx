@@ -30,14 +30,14 @@ const Navbar = () => {
                     </Link>
                     <div className="hidden md:flex items-center gap-8">
                         <Link to="/" className="text-gray-900 hover:text-violet-600 transition-colors duration-300 font-medium">Home</Link>
-                        <Link to="/collections" className="text-gray-700 hover:text-violet-600 transition-colors duration-300">Collections</Link>
+                        <Link to="/collections" className={`text-gray-700 hover:text-violet-600 transition-colors duration-300 ${location.pathname.includes('collection') ? 'font-bold' : 'font-medium'} `}>Collections</Link>
                         <Link to="/about" className="text-gray-700 hover:text-violet-600 transition-colors duration-300">About</Link>
                         <Link to="/contact" className="text-gray-700 hover:text-violet-600 transition-colors duration-300">Contact</Link>
                     </div>
                     {
                         user ? (<>
                             <div className='flex items-center justify-center space-x-5'>
-                                <Link to={user?.isAdmin ? "/admin/dashboard" : "/profile"}> <h1>Welcome {user?.name}</h1></Link>
+                                <Link to={user?.isAdmin ? "/admin/dashboard" : "/auth/profile"}> <h1>Welcome {user?.name}</h1></Link>
                                 <button onClick={handleLogout} className="bg-gradient-to-r from-red-600 to-red-600 text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg transition-all duration-300 cursor-pointer">Logout</button>
                             </div>
                         </>) : (<Link to={"/login"} className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-6 py-2.5 rounded-full font-medium hover:shadow-lg transition-all duration-300">

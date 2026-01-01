@@ -1,34 +1,69 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { LoadingScreen } from '../components/LoadingScreen'
+import { useDispatch, useSelector } from 'react-redux'
+import { getProduct } from '../features/products/productSlice'
+import { toast } from 'react-toastify'
+import { useNavigate, useParams } from 'react-router-dom'
+import { addItemToCart } from '../features/cart/cartSlice'
 
 const ProductPage = () => {
+
+    const { product, productSuccess, productLoading, productError, productErrorMessage } = useSelector(state => state.product)
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { pid } = useParams()
+
+
+    const customStyle = {
+        backgroundImage: `url(${product.image})`,
+    }
+
+
+    const handleAddToCart = (cartData) => {
+        dispatch(addItemToCart(cartData))
+        navigate("/cart")
+    }
+
+
+
+    useEffect(() => {
+
+        // Api Call
+        dispatch(getProduct(pid))
+
+
+        if (productError && productErrorMessage) {
+            toast.error(productErrorMessage, { position: "top-center" })
+        }
+
+
+    }, [productError, productErrorMessage, pid])
+
+
+    if (productLoading) {
+        return (
+            <LoadingScreen loadingMessage={"Products Message"} />
+        )
+    }
+
+
+
     return (
         <div className="min-h-screen bg-stone-50">
             <div className="max-w-7xl mx-auto px-4 py-6">
                 <nav className="text-sm text-gray-600 mb-6">
                     <span>Home</span> <span className="mx-2">/</span>
                     <span>Collections</span> <span className="mx-2">/</span>
-                    <span className="text-neutral-900 font-medium">Elegant Summer Dress</span>
+                    <span className="text-neutral-900 font-medium">{product.name}</span>
                 </nav>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <div>
                         <div className="bg-white rounded-3xl shadow-lg p-4 mb-4">
-                            <div className="aspect-[3/4] bg-gray-200 rounded-2xl"></div>
+                            <div style={customStyle} className="aspect-[3/4] bg-gray-200 relative bg-center bg-cover"></div>
                         </div>
-                        <div className="grid grid-cols-4 gap-3">
-                            <div className="aspect-square bg-white rounded-2xl shadow-md p-2">
-                                <div className="w-full h-full bg-gray-200 rounded-xl"></div>
-                            </div>
-                            <div className="aspect-square bg-white rounded-2xl shadow-md p-2">
-                                <div className="w-full h-full bg-gray-200 rounded-xl"></div>
-                            </div>
-                            <div className="aspect-square bg-white rounded-2xl shadow-md p-2">
-                                <div className="w-full h-full bg-gray-200 rounded-xl"></div>
-                            </div>
-                            <div className="aspect-square bg-white rounded-2xl shadow-md p-2">
-                                <div className="w-full h-full bg-gray-200 rounded-xl"></div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <div>
@@ -36,7 +71,7 @@ const ProductPage = () => {
                             <span className="inline-block bg-violet-100 text-violet-700 text-xs font-semibold px-3 py-1 rounded-full mb-4">
                                 Dresses
                             </span>
-                            <h1 className="text-4xl font-bold text-neutral-900 mb-4">Elegant Summer Dress</h1>
+                            <h1 className="text-4xl font-bold text-neutral-900 mb-4">{product.name}</h1>
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="flex text-yellow-400">
                                     <span>★</span>
@@ -47,30 +82,23 @@ const ProductPage = () => {
                                 </div>
                                 <span className="text-sm text-gray-600">(127 reviews)</span>
                             </div>
-                            <p className="text-4xl font-bold text-neutral-900 mb-6">$89.99</p>
+                            <p className="text-4xl font-bold text-neutral-900 mb-6">₹{product.salePrice}</p>
                             <p className="text-gray-700 leading-relaxed">
-                                Experience elegance with this stunning summer dress. Perfect for any occasion, featuring breathable fabric and a flattering silhouette. Designed with modern aesthetics and timeless appeal.
+                                {product.description}
                             </p>
                         </div>
 
                         <div className="mb-6">
-                            <h3 className="text-sm font-semibold text-neutral-900 mb-3">Select Size</h3>
+                            <h3 className="text-sm font-semibold text-neutral-900 mb-3">Available SIze</h3>
                             <div className="flex gap-3">
-                                <button className="px-6 py-3 border-2 border-gray-300 rounded-xl text-sm font-medium hover:border-violet-600 hover:text-violet-600 transition-all">S</button>
-                                <button className="px-6 py-3 border-2 border-gray-300 rounded-xl text-sm font-medium hover:border-violet-600 hover:text-violet-600 transition-all">M</button>
-                                <button className="px-6 py-3 border-2 border-violet-600 bg-violet-50 text-violet-600 rounded-xl text-sm font-medium">L</button>
-                                <button className="px-6 py-3 border-2 border-gray-300 rounded-xl text-sm font-medium hover:border-violet-600 hover:text-violet-600 transition-all">XL</button>
+                                <button className="px-6 py-3 border-2 border-violet-600 bg-violet-50 text-violet-600 rounded-xl text-sm font-medium">{product?.size?.toUpperCase()}</button>
+
                             </div>
                         </div>
-
-                        <div className="mb-8">
-                            <h3 className="text-sm font-semibold text-neutral-900 mb-3">Select Color</h3>
-                            <div className="flex gap-3">
-                                <button className="w-12 h-12 rounded-full bg-black border-4 border-violet-600 shadow-md"></button>
-                                <button className="w-12 h-12 rounded-full bg-white border-2 border-gray-300 shadow-md hover:border-violet-600 transition-colors"></button>
-                                <button className="w-12 h-12 rounded-full bg-blue-500 border-2 border-gray-300 shadow-md hover:border-violet-600 transition-colors"></button>
-                                <button className="w-12 h-12 rounded-full bg-red-500 border-2 border-gray-300 shadow-md hover:border-violet-600 transition-colors"></button>
-                            </div>
+                        <div className="flex gap-4 mb-8">
+                            <button onClick={() => handleAddToCart({ productId: product._id, qty: 1 })} className="cursor-pointer flex-1 border-2 border-neutral-900 text-neutral-900 py-4 rounded-xl font-semibold hover:bg-neutral-900 hover:text-white transition-all">
+                                Add to Cart
+                            </button>
                         </div>
 
                         <div className="bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-violet-300 rounded-3xl p-6 mb-8">
@@ -95,24 +123,16 @@ const ProductPage = () => {
                                 </label>
                             </div>
 
+
+
+
                             <div className="flex gap-3">
                                 <button className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3.5 rounded-xl font-semibold hover:from-violet-700 hover:to-purple-700 transition-all shadow-md">
                                     Upload & Try Virtually
                                 </button>
-                                <button className="flex-1 border-2 border-violet-600 text-violet-600 py-3.5 rounded-xl font-semibold hover:bg-violet-50 transition-all">
-                                    Use Sample Model
-                                </button>
                             </div>
                         </div>
 
-                        <div className="flex gap-4 mb-8">
-                            <button className="flex-1 bg-neutral-900 text-white py-4 rounded-xl font-semibold hover:bg-neutral-800 transition-all shadow-md">
-                                Try Virtual Fit
-                            </button>
-                            <button className="flex-1 border-2 border-neutral-900 text-neutral-900 py-4 rounded-xl font-semibold hover:bg-neutral-900 hover:text-white transition-all">
-                                Add to Cart
-                            </button>
-                        </div>
 
                         <div className="bg-white rounded-3xl shadow-md p-6 mb-8">
                             <h3 className="text-lg font-bold text-neutral-900 mb-4">Product Details</h3>
