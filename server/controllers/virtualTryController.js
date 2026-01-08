@@ -1,6 +1,7 @@
+import fs from "node:fs"
 import Replicate from "replicate";
 import User from "../models/userModel.js";
-
+import uploadToCloudinary from "../middlewares/cloudinaryMiddleware.js";
 
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN,
@@ -10,12 +11,20 @@ const replicate = new Replicate({
 export const virtualTry = async (req, res) => {
 
     try {
-        const { person_url, cloth_url, garment_des } = req.body
+        // const { person_url, cloth_url, garment_des } = req.body
+           const { cloth_url, garment_des } = req.body
 
-        if (!person_url || !cloth_url || !garment_des) {
+        // if (!person_url || !cloth_url || !garment_des) {
+            if (!cloth_url || !garment_des) {
             res.status(409)
             throw new Error("Please Enter All Details!")
         }
+
+        //   Upload To Cloudinary
+        let imagePath = await uploadToCloudinary(req.file.path)
+
+        // Remove image from our server
+        fs.unlinkSync(req.file.path)
 
         // Check if user have credits
         let user = await User.findById(req.user._id)
@@ -26,7 +35,8 @@ export const virtualTry = async (req, res) => {
         } else {
             const input = {
                 garm_img: cloth_url,
-                human_img: person_url,
+                // human_img: person_url,
+                human_img: imagePath.secure_url,
                 garment_des: garment_des
             };
 

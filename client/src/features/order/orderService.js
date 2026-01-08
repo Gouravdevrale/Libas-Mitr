@@ -26,7 +26,31 @@ const fetchMyOrders = async (token) => {
 
 }
 
+const fetchMyOrder = async (token, orderId) => {
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
 
-const orderService = { placeOrder, fetchMyOrders }
+    const response = await axios.get(`${API_URL}/${orderId}`, options)
+    return response.data
+
+}
+
+const cancelOrder = async (token, orderId) => {
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(`${API_URL}/${orderId}`, { status: "cancelled" }, options)
+    return response.data
+
+}
+
+
+const orderService = { placeOrder, fetchMyOrders, fetchMyOrder, cancelOrder }
 
 export default orderService
