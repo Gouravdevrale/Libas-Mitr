@@ -61,6 +61,7 @@ export const virtualTry = async (req, res) => {
 
     } catch (error) {
         res.status(409)
+        console.log(error.message)
         throw new Error("Currently Virtual Try Is Not Available")
     }
 

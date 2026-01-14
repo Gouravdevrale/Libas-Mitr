@@ -69,7 +69,8 @@ const ProductPage = () => {
 
     const handleAddToCart = (cartData) => {
         dispatch(addItemToCart(cartData))
-        navigate("/cart")
+        navigate("/auth/cart")
+        //auth/cart updated on 14/1/26 
     }
 
 
@@ -154,7 +155,7 @@ const ProductPage = () => {
                             </div>
                         </div>
                         <div className="flex gap-4 mb-8">
-                            <button onClick={() => handleAddToCart({ productId: product._id, qty: 1 })} className="cursor-pointer flex-1 border-2 border-neutral-900 text-neutral-900 py-4 rounded-xl font-semibold hover:bg-neutral-900 hover:text-white transition-all">
+                            <button  onClick={() => handleAddToCart({ productId: product._id, qty: 1 })} className="cursor-pointer flex-1 border-2 border-neutral-900 text-neutral-900 py-4 rounded-xl font-semibold hover:bg-neutral-900 hover:text-white transition-all">
                                 Add to Cart
                             </button>
                         </div>

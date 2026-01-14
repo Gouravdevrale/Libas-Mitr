@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { removeCartItem, updateCartItems } from '../features/cart/cartSlice'
-import { toast } from 'react-toastify'
+// import { toast } from 'react-toastify'
 
 const CartItem = ({ item }) => {
 
@@ -31,7 +31,7 @@ const CartItem = ({ item }) => {
     return (
         <div className="bg-white rounded-3xl shadow-md p-6 hover:shadow-lg transition-shadow">
             <div className="flex flex-col sm:flex-row gap-6">
-                <div style={{ backgroundImage: `url(${item.product.image})` }} className="w-full sm:w-32 h-40 rounded-2xl flex-shrink-0 bg-cover bg-center"></div>
+                <div style={{ backgroundImage: `url(${item.product.image})` }} className="w-full sm:w-32 h-40 rounded-2xl shrink-0 bg-cover bg-center"></div>
 
                 <div className="flex-1">
                     <div className="flex justify-between items-start mb-3">
